@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: school-fee-backend
+    env: python
+    region: oregon
+    plan: starter
+    branch: main
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: gunicorn app.main:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ENVIRONMENT
+        value: production
+      - key: ALLOWED_ORIGINS
+        value: "https://your-frontend.onrender.com"
+      - key: ARKESEL_API_KEY
+        sync: false
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+
+  - type: web
+    name: school-fee-frontend
+    env: static
+    region: oregon
+    plan: starter
+    branch: main
+    buildCommand: cd school-fee-management && npm ci && npm run build
+    staticPublishPath: school-fee-management/dist
+    routes:
+      - type: rewrite
+        source: "/*"
+        destination: "/index.html"
+    envVars:
+      - key: VITE_API_URL
+        value: "https://school-fee-backend.onrender.com"
+
+databases:
+  - name: school-fee-db
+    databaseName: school_fee_management
+    region: oregon
+    plan: starter
