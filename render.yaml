@@ -2,10 +2,11 @@ services:
   - type: web
     name: school-fee-backend
     env: python
+    rootDir: backend
     region: oregon
     plan: starter
     branch: main
-    buildCommand: pip install -r backend/requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app.main:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
     healthCheckPath: /health
     envVars:
@@ -25,11 +26,12 @@ services:
   - type: web
     name: school-fee-frontend
     env: static
+    rootDir: school-fee-management
     region: oregon
     plan: starter
     branch: main
-    buildCommand: cd school-fee-management && npm ci && npm run build
-    staticPublishPath: school-fee-management/dist
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
     routes:
       - type: rewrite
         source: "/*"
