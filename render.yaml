@@ -27,9 +27,6 @@ services:
     name: school-fee-frontend
     env: static
     rootDir: school-fee-management
-    region: oregon
-    plan: starter
-    branch: main
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
     routes:
